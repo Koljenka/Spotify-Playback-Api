@@ -29,19 +29,14 @@ app.post('/history', (req, res) => {
 });
 
 app.post('/topTrack', (req, res) => {
-    pool.query(`SELECT DISTINCT playback.trackid, c
+    pool.query(`SELECT trackid, t.name, count(*) as c
                 FROM playback
                          JOIN user ON userid = user.id
-                         JOIN track t on playback.trackid = t.id
-                         JOIN (SELECT trackid, count(*) as c
-                               FROM playback
-                                        JOIN user ON userid = user.id
-                               WHERE sid = ?
-                               GROUP BY trackid
-                               order by c desc) as count ON playback.trackid = count.trackid
+                         JOIN track t on t.id = playback.trackid
                 WHERE sid = ?
+                GROUP BY trackid
                 ORDER BY c DESC
-                LIMIT 50;`, [req.userId, req.userId],
+                LIMIT 50;`, [req.userId],
         (error, results) => {
             if (error) {
                 res.json(error).status(500).end();
@@ -87,31 +82,21 @@ app.post('/listeningClock', (req, res) => {
 
 app.post('/streak', (req, res) => {
     const {from, to} = req.body;
-    pool.query(`SELECT consec_set id, MAX(start) start, MAX(end) end, (count(consec_set) - 1) days
-                FROM (
-                         SELECT IF(b.date IS NULL, @val := @val + 1, @val) AS consec_set,
-                                IF(b.date IS NULL, a.date, null)           AS start,
-                                IF(b.date IS NOT NULL, b.date, null)       AS end
-                         FROM (select MAX(userid) userid, DATE(FROM_UNIXTIME(played_at)) date
-                               from playback
-                                        join user u on playback.userid = u.id
-                               where sid = ?
+    pool.query(`SELECT FROM_DAYS(MIN(D.day)) AS start, FROM_DAYS(MAX(D.day)) AS end, (MAX(D.day) - MIN(D.day)) as days
+                FROM (SELECT days.day, days.day - (@row_number := @row_number + 1) AS grp
+                      FROM (
+                               SELECT (TO_DAYS(DATE(FROM_UNIXTIME(played_at)))) day
+                               FROM playback
+                                        JOIN user u on playback.userid = u.id
+                                        CROSS JOIN (SELECT @row_number := 0) AS x
+                               WHERE sid = ?
                                  and played_at >= ?
                                  and played_at <= ?
-                               GROUP BY date) a
-                                  CROSS JOIN (SELECT @val := 0) var_init
-                                  LEFT JOIN (select MAX(userid) userid, DATE(FROM_UNIXTIME(played_at)) date
-                                             from playback
-                                                      join user u on playback.userid = u.id
-                                             where sid = ?
-                                               and played_at >= ?
-                                               and played_at <= ?
-                                             GROUP BY date) b ON
-                                 a.userid = b.userid AND
-                                 a.date = b.date + INTERVAL 1 DAY
-                     ) a
-                GROUP BY a.consec_set
-                ORDER BY days DESC;`, [req.userId, from, to, req.userId, from, to],
+                               group by day
+                           ) as days) AS D
+                GROUP BY grp
+                ORDER BY days DESC
+                LIMIT 5;`, [req.userId, from, to],
         (error, results) => {
             if (error) {
                 res.json(error).status(500).end();
