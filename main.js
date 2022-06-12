@@ -45,6 +45,28 @@ app.post('/topTrack', (req, res) => {
         });
 });
 
+app.post('/isTopTrackForDays', (req, res) => {
+    const {track_id} = req.body;
+    pool.query(`call top_track_for_days(?, (SELECT id from user where sid = ?));`, [track_id, req.userId],
+        (error, results) => {
+            if (error) {
+                res.json(error).status(500).end();
+            }
+            res.json(results).end();
+        });
+});
+
+app.post('/isTopTrackForMonths', (req, res) => {
+    const {track_id} = req.body;
+    pool.query(`call top_track_for_month(?, (SELECT id from user where sid = ?));`, [track_id, req.userId],
+        (error, results) => {
+            if (error) {
+                res.json(error).status(500).end();
+            }
+            res.json(results).end();
+        });
+});
+
 app.post('/contextOfTrack', (req, res) => {
     const {track_id} = req.body;
     pool.query(`select distinct playback.trackid, playback.contexturi
