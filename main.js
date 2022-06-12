@@ -64,7 +64,7 @@ app.post('/isTopTrackForMonths', (req, res) => {
                 res.json(error).status(500).end();
             }
             // noinspection JSUnresolvedVariable
-            res.json(results[0][0].top_months).end();
+            res.json(JSON.parse(results[0][0].top_months)).end();
         });
 });
 
