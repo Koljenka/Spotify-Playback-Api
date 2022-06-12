@@ -52,7 +52,7 @@ app.post('/isTopTrackForDays', (req, res) => {
             if (error) {
                 res.json(error).status(500).end();
             }
-            res.json(results).end();
+            res.json(results[0][0]).end();
         });
 });
 
@@ -63,7 +63,8 @@ app.post('/isTopTrackForMonths', (req, res) => {
             if (error) {
                 res.json(error).status(500).end();
             }
-            res.json(results).end();
+            // noinspection JSUnresolvedVariable
+            res.json(results[0][0].top_months).end();
         });
 });
 
