@@ -68,6 +68,18 @@ app.post('/isTopTrackForMonths', (req, res) => {
         });
 });
 
+app.post('/getTopTracksForEachMonth', (req, res) => {
+    const {track_id} = req.body;
+    pool.query(`call top_tracks_each_month((SELECT id from user where sid = ?));`, [track_id, req.userId],
+        (error, results) => {
+            if (error) {
+                res.json(error).status(500).end();
+            }
+            // noinspection JSUnresolvedVariable
+            res.json(JSON.parse(results[0][0].top_months)).end();
+        });
+});
+
 app.post('/contextOfTrack', (req, res) => {
     const {track_id} = req.body;
     pool.query(`select distinct playback.trackid, playback.contexturi
