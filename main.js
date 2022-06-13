@@ -76,7 +76,7 @@ app.post('/getTopTracksForEachMonth', (req, res) => {
                 res.json(error).status(500).end();
             }
             // noinspection JSUnresolvedVariable
-            res.json(JSON.parse(results[0][0].top_months)).end();
+            res.json(results).end();
         });
 });
 
