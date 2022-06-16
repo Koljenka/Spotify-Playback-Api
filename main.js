@@ -98,14 +98,20 @@ app.post('/contextOfTrack', (req, res) => {
 
 app.post('/listeningClock', (req, res) => {
     const {from, to} = req.body;
-    pool.query(`select TIME_FORMAT(FROM_UNIXTIME(played_at), '%H') hour, count(*) as count
+    pool.query(`select TIME_FORMAT(FROM_UNIXTIME(played_at), '%H')  hour,
+                       (count(*) / (SELECT COUNT(*)
+                                    FROM playback
+                                             join user u on playback.userid = u.id
+                                    where sid = ?
+                                      and played_at >= ?
+                                      and played_at <= ?) * 100) as count
                 from playback
                          join user u on playback.userid = u.id
                 where sid = ?
                   and played_at >= ?
                   and played_at <= ?
                 GROUP BY hour
-                order by hour ASC;`, [req.userId, from, to],
+                order by hour; `, [req.userId, from, to, req.userId, from, to],
         (error, results) => {
             if (error) {
                 res.json(error).status(500).end();
@@ -210,7 +216,7 @@ app.post('/totalTracks', (req, res) => {
 
 app.post('/uniqueTracks', (req, res) => {
     const {from, to} = req.body;
-    pool.query(`select count(DISTINCT(trackid)) count
+    pool.query(`select count(DISTINCT (trackid)) count
                 from playback
                          join user u on playback.userid = u.id
                 where sid = ?
@@ -224,7 +230,6 @@ app.post('/uniqueTracks', (req, res) => {
             res.json(results).end();
         });
 });
-
 
 
 app.get('/version', (req, res) => {
