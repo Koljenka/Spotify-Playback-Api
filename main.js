@@ -38,7 +38,7 @@ app.post('/topTrack', (req, res) => {
                   and played_at >= ?
                   and played_at <= ?
                 GROUP BY trackid
-                ORDER BY c DESC
+                ORDER BY count DESC
                 LIMIT 5;`, [req.userId, from, to],
         (error, results) => {
             if (error) {
