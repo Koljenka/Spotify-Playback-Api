@@ -29,14 +29,17 @@ app.post('/history', (req, res) => {
 });
 
 app.post('/topTrack', (req, res) => {
-    pool.query(`SELECT trackid, t.name, count(*) as c
+    const {from, to} = req.body;
+    pool.query(`SELECT trackid as trackId, count(*) as count
                 FROM playback
                          JOIN user ON userid = user.id
                          JOIN track t on t.id = playback.trackid
                 WHERE sid = ?
+                  and played_at >= ?
+                  and played_at <= ?
                 GROUP BY trackid
                 ORDER BY c DESC
-                LIMIT 50;`, [req.userId],
+                LIMIT 5;`, [req.userId, from, to],
         (error, results) => {
             if (error) {
                 res.json(error).status(500).end();
