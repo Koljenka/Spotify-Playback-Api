@@ -30,14 +30,53 @@ app.post('/history', (req, res) => {
 
 app.post('/topTrack', (req, res) => {
     const {from, to} = req.body;
-    pool.query(`SELECT trackid as trackId, count(*) as count
+    pool.query(`SELECT trackid as id, count(*) as count
                 FROM playback
                          JOIN user ON userid = user.id
-                         JOIN track t on t.id = playback.trackid
                 WHERE sid = ?
                   and played_at >= ?
                   and played_at <= ?
                 GROUP BY trackid
+                ORDER BY count DESC
+                LIMIT 5;`, [req.userId, from, to],
+        (error, results) => {
+            if (error) {
+                res.json(error).status(500).end();
+            }
+            res.json(results).end();
+        });
+});
+
+app.post('/topContext', (req, res) => {
+    const {from, to} = req.body;
+    pool.query(`SELECT contexturi as id, count(*) as count
+                FROM playback
+                         JOIN user ON userid = user.id
+                WHERE sid = ?
+                  and played_at >= ?
+                  and played_at <= ?
+                  and contexturi is not null
+                GROUP BY contexturi
+                ORDER BY count DESC
+                LIMIT 5;`, [req.userId, from, to],
+        (error, results) => {
+            if (error) {
+                res.json(error).status(500).end();
+            }
+            res.json(results).end();
+        });
+});
+
+app.post('/topArtist', (req, res) => {
+    const {from, to} = req.body;
+    pool.query(`SELECT artistid as id, count(*) as count
+                FROM playback
+                         JOIN user ON userid = user.id
+                         JOIN track_artist ta on playback.trackid = ta.trackid
+                WHERE sid = ?
+                  and played_at >= ?
+                  and played_at <= ?
+                GROUP BY artistid
                 ORDER BY count DESC
                 LIMIT 5;`, [req.userId, from, to],
         (error, results) => {

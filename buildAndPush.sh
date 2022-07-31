@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=1.3.10
+VERSION=1.3.11
 docker build -t kojenka/spotify-playback-api:$VERSION .
 docker tag kojenka/spotify-playback-api:$VERSION kojenka/spotify-playback-api:latest
 docker push kojenka/spotify-playback-api:$VERSION
