@@ -2,10 +2,10 @@ openapi: 3.0.3
 info:
   description: All endpoints of the personal Spotify-Api
   title: Spotify-Api
-  version: 1.2.0
+  version: 2.0.0
 servers:
 - description: Api Server
-  url: "{scheme}://{host}/spotify-api/{basePath}"
+  url: "{scheme}://{host}/spotify-api"
   variables:
     scheme:
       default: https
@@ -17,11 +17,6 @@ servers:
       enum:
       - kolkie.de
       - localhost:8080
-    basePath:
-      default: v1
-      enum:
-      - v1
-      - dev
 paths:
   /Context/{contextUri}/PlayCount:
     get:

@@ -4,10 +4,10 @@ const logger = require("../logger");
 const Service = require("../services/Service");
 
 const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'phpmyadmin',
-    password: 'ut6rF7=$7v=YcAEZ',
-    database: 'spotify-history'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE
 });
 
 const getPool = () => pool;
