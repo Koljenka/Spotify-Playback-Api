@@ -1,0 +1,863 @@
+openapi: 3.0.3
+info:
+  description: All endpoints of the personal Spotify-Api
+  title: Spotify-Api
+  version: 1.1.0
+servers:
+- description: Api Server
+  url: "https://{host}/spotify-api/{basePath}"
+  variables:
+    host:
+      default: kolkie.de
+      enum:
+      - kolkie.de
+      - localhost:8080
+    basePath:
+      default: v1
+      enum:
+      - v1
+      - dev
+paths:
+  /Context/{contextUri}/PlayCount:
+    get:
+      operationId: getContextPlayCount
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: spotify:playlist:37i9dQZF1EVJSvZp5AOML2
+        explode: false
+        in: path
+        name: contextUri
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountObject'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the play count for the given context
+      tags:
+      - Context
+      x-eov-operation-handler: controllers/ContextController
+  /Playback/History:
+    get:
+      operationId: getPlaybackHistory
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PlayHistory'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the playback history
+      tags:
+      - Playback
+      x-eov-operation-handler: controllers/PlaybackController
+  /Statistics/TopTracks:
+    get:
+      operationId: getTopTracks
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TopContent'
+                maxItems: 5
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the top 5 tracks for the given timeframe
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Statistics/TopContexts:
+    get:
+      operationId: getTopContexts
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TopContent'
+                maxItems: 5
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the top 5 contexts for the given timeframe
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Statistics/TopArtists:
+    get:
+      operationId: getTopArtists
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TopContent'
+                maxItems: 5
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the top 5 artists for the given timeframe
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Statistics/ListeningClock:
+    get:
+      operationId: getListeningClock
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ListeningClockDataPoint'
+                maxItems: 24
+                minItems: 24
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Get the percentage of listened tracks for each hour
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Statistics/Streak:
+    get:
+      operationId: getStreak
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Streak'
+                maxItems: 5
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the top five streaks of continuous days of listening
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Statistics/MostActiveDay:
+    get:
+      operationId: getMostActiveDay
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/MostActiveDay'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the most active day
+      tags:
+      - Statistics
+      x-eov-operation-handler: controllers/StatisticsController
+  /Track/{trackId}/PlayCount:
+    get:
+      operationId: getTrackPlayCount
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: 1zRT09DPHl91ozARaXndAs
+        explode: false
+        in: path
+        name: trackId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountObject'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the play count for the given track
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+  /Track/{trackId}/GetMonthsWhereTrackIsTop:
+    get:
+      operationId: getMonthsWhereTrackIsTop
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: 1zRT09DPHl91ozARaXndAs
+        explode: false
+        in: path
+        name: trackId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TopTrackForMonth'
+                minItems: 0
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets all the months in which the track was the top track
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+  /Track/{trackId}/TopTrackForDays:
+    get:
+      operationId: getTopTrackForDays
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: 1zRT09DPHl91ozARaXndAs
+        explode: false
+        in: path
+        name: trackId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopTrackForDays'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the number of days and plays if this track is the most listened
+        to track for the last days
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+  /Track/TotalTracks:
+    get:
+      operationId: getTotalTracks
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CountObject'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the total listened to tracks for the given timeframe
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+  /Track/TopTrackForEachMonth:
+    get:
+      operationId: getTopTrackForEachMonth
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TopTrackForMonth'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the top track for each month from the beginning of recording
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+  /Track/UniqueTracks:
+    get:
+      operationId: getUniqueTracks
+      parameters:
+      - explode: false
+        in: header
+        name: accessToken
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: Unix timestamp in seconds
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CountObject'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the total listened to unique tracks for the given timeframe
+      tags:
+      - Track
+      x-eov-operation-handler: controllers/TrackController
+components:
+  parameters:
+    AccessToken:
+      explode: false
+      in: header
+      name: accessToken
+      required: true
+      schema:
+        type: string
+      style: simple
+    FromTimestamp:
+      description: Unix timestamp in seconds
+      explode: true
+      in: query
+      name: from
+      required: true
+      schema:
+        type: integer
+      style: form
+    ToTimestamp:
+      description: Unix timestamp in seconds
+      explode: true
+      in: query
+      name: to
+      required: true
+      schema:
+        type: integer
+      style: form
+  responses:
+    TopContentResponse:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/TopContent'
+            maxItems: 5
+            type: array
+      description: OK
+    CountObjectResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CountObject'
+      description: OK
+    CountObjectsResponse:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/CountObject'
+            type: array
+      description: OK
+    UnauthorizedResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+      description: Unauthorized
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+      description: Error
+  schemas:
+    PlayHistory:
+      example:
+        playedAt: 1613067412
+        trackId: 1zRT09DPHl91ozARaXndAs
+        contextUri: spotify:playlist:37i9dQZF1EVJSvZp5AOML2
+      properties:
+        trackId:
+          example: 1zRT09DPHl91ozARaXndAs
+          type: string
+        contextUri:
+          example: spotify:playlist:37i9dQZF1EVJSvZp5AOML2
+          type: string
+        playedAt:
+          description: Unix Timestamp in seconds
+          example: 1613067412
+          type: integer
+      type: object
+    TopContent:
+      example:
+        count: 23
+        id: 1zRT09DPHl91ozARaXndAs
+      properties:
+        id:
+          example: 1zRT09DPHl91ozARaXndAs
+          type: string
+        count:
+          example: 23
+          type: integer
+      type: object
+    TopTrackForDays:
+      example:
+        plays: 6
+        days: 0
+      properties:
+        days:
+          nullable: true
+          type: integer
+        plays:
+          nullable: true
+          type: integer
+      type: object
+    TopTrackForMonth:
+      example:
+        trackId: 1zRT09DPHl91ozARaXndAs
+        count: 3
+        firstDate: 2022-08-01T00:00:00.000+00:00
+      properties:
+        count:
+          example: 3
+          type: integer
+        trackId:
+          example: 1zRT09DPHl91ozARaXndAs
+          type: string
+        firstDate:
+          example: 2022-08-01
+          format: date
+          type: string
+      type: object
+    CountObject:
+      example:
+        count: 12
+      properties:
+        count:
+          example: 12
+          type: integer
+      type: object
+    Streak:
+      example:
+        start: 2000-01-23
+        days: 0
+        end: 2000-01-23
+      properties:
+        start:
+          format: date
+          type: string
+        end:
+          format: date
+          type: string
+        days:
+          type: integer
+      type: object
+    MostActiveDay:
+      example:
+        date: 2000-01-23
+        count: 0
+      properties:
+        date:
+          format: date
+          type: string
+        count:
+          type: integer
+      type: object
+    ListeningClockDataPoint:
+      example:
+        hour: "05"
+        count: 2.6542
+      properties:
+        hour:
+          example: "05"
+          type: string
+        count:
+          example: 2.6542
+          format: double
+          type: number
+      type: object
+    ApiError:
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+      type: object
