@@ -1,9 +1,7 @@
 FROM node:14.5.0
 WORKDIR /app
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["src/", "./src"]
 
-RUN npm install
+RUN cd src
 
-COPY main.js .
-
-CMD ["node", "main.js"]
+RUN npm run start

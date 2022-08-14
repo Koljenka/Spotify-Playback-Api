@@ -95,7 +95,7 @@ class Controller {
       } else if (param.in === 'query') {
         requestParams[param.name] = request.query[param.name];
       } else if (param.in === 'header') {
-        requestParams[param.name] = request.headers[param.name];
+        requestParams[param.name] = request.headers[param.name.toLowerCase()];
       }
     });
     return requestParams;

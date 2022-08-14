@@ -2,11 +2,16 @@ openapi: 3.0.3
 info:
   description: All endpoints of the personal Spotify-Api
   title: Spotify-Api
-  version: 1.1.0
+  version: 1.2.0
 servers:
 - description: Api Server
-  url: "https://{host}/spotify-api/{basePath}"
+  url: "{scheme}://{host}/spotify-api/{basePath}"
   variables:
+    scheme:
+      default: https
+      enum:
+      - https
+      - http
     host:
       default: kolkie.de
       enum:
@@ -341,10 +346,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/Streak'
-                maxItems: 5
-                type: array
+                $ref: '#/components/schemas/Streak'
           description: OK
         "401":
           content:
@@ -358,7 +360,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
           description: Error
-      summary: Gets the top five streaks of continuous days of listening
+      summary: Gets the top streak of continuous days of listening
       tags:
       - Statistics
       x-eov-operation-handler: controllers/StatisticsController
@@ -394,9 +396,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/MostActiveDay'
-                type: array
+                $ref: '#/components/schemas/MostActiveDay'
           description: OK
         "401":
           content:
@@ -576,9 +576,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/CountObject'
-                type: array
+                $ref: '#/components/schemas/CountObject'
           description: OK
         "401":
           content:
@@ -664,9 +662,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/CountObject'
-                type: array
+                $ref: '#/components/schemas/CountObject'
           description: OK
         "401":
           content:
@@ -727,14 +723,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CountObject'
-      description: OK
-    CountObjectsResponse:
-      content:
-        application/json:
-          schema:
-            items:
-              $ref: '#/components/schemas/CountObject'
-            type: array
       description: OK
     UnauthorizedResponse:
       content:
