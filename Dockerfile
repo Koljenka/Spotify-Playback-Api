@@ -1,7 +1,7 @@
 FROM node:14.5.0
 WORKDIR /app
-COPY ["src/", "./src"]
+COPY ["src/", "./"]
 
-RUN cd src
+RUN npm install
 
-RUN npm run start
+CMD ["node", "index.js"]

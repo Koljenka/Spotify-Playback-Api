@@ -2,7 +2,7 @@ const path = require('path');
 
 const config = {
   ROOT_DIR: __dirname,
-  URL_PORT: 8080,
+  URL_PORT: 8096,
   URL_PATH: 'https://kolkie.de',
   BASE_VERSION: '/spotify-api',
   CONTROLLER_DIRECTORY: path.join(__dirname, 'controllers'),
